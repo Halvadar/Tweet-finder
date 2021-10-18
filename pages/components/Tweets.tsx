@@ -10,7 +10,14 @@ interface Props {
 
 function Tweets({ tweets, userInfo }: Props): ReactElement {
   return (
-    <Flex my="10" mx="5" direction="row" wrap="wrap" justifyContent="center">
+    <Flex
+      my="10"
+      mx="5"
+      direction="row"
+      wrap="wrap"
+      justifyContent="center"
+      alignItems="flex-start"
+    >
       {tweets.map((tweet) => {
         const { id } = tweet;
         return <Tweet key={id} tweet={tweet} userInfo={userInfo} />;

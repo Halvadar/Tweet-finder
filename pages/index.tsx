@@ -4,11 +4,19 @@ import Head from "next/head";
 import SearchBox from "./components/SearchBox";
 import { useState } from "react";
 import Tweets from "./components/Tweets";
-
+export interface Mention {
+  start: number;
+  end: number;
+  username: string;
+  id: number;
+}
 export interface TweetObject {
   author_id: string;
   id: string;
   text: string;
+  entities?: {
+    mentions: Array<Mention>;
+  };
 }
 export interface UserInfoObject {
   id: undefined | string;

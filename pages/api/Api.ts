@@ -36,7 +36,7 @@ export default async function handler(
       headers: { Authorization: "Bearer " + process.env.TWITTER_BEARER_TOKEN },
       params: {
         max_results: 10,
-        expansions: "author_id",
+        expansions: "author_id,referenced_tweets.id,entities.mentions.username",
         "user.fields": "location,name,profile_image_url,url",
       },
     }

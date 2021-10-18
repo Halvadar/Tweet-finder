@@ -25,17 +25,16 @@ const SearchBox = ({
   };
   const onClick = async () => {
     setIsLoading(true);
-    const response = await axios("/api/Api?handle=" + inputVal)
-      .then((res: any) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    const { tweets, userInfo, metaInfo } = response.data;
-    setTweets(tweets);
-    setUserInfo(userInfo);
-    setMetaInfo(metaInfo);
+    const response = await axios("/api/Api?handle=" + inputVal).then(
+      (res: any) => {
+        const { tweets, userInfo, metaInfo } = res.data;
+        console.log(res.data);
+        setTweets(tweets);
+        setUserInfo(userInfo.users[0]);
+        setMetaInfo({ next_token: metaInfo.next_token });
+      }
+    );
+
     setIsLoading(false);
   };
 
