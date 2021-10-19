@@ -22,6 +22,7 @@ export default async function handler(
       .status(400)
       .send({ message: "Only single query parameter needs to be sent!" });
   }
+
   try {
     const user: any = await axios(
       `https://api.twitter.com/2/users/by/username/${handle}`,
@@ -44,9 +45,7 @@ export default async function handler(
   let i = 0;
 
   const tweetsResult: any = await fetchTweets(userId);
-  if (tweetsResult.data.errors) {
-    return res.status(404).send({ message: "User doesn't exist" });
-  }
+
   if (!tweetsResult.data.data) {
     return res.status(404).send({ message: "User Has not Tweeted yet" });
   }
