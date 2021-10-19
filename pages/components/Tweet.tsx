@@ -73,7 +73,14 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
           </Link>
         </Flex>
       </HStack>
-      <Text>{!fixedText ? text : fixedText.map((fragment) => fragment)})</Text>
+      <Text>
+        {!fixedText
+          ? text
+          : fixedText.map((fragment, index) => (
+              <React.Fragment key={index}>{fragment}</React.Fragment>
+            ))}
+        )
+      </Text>
       {(location || url) && (
         <>
           <Divider my="10px" />
