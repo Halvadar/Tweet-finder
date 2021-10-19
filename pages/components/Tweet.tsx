@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/layout";
 import React, { useEffect, useRef, useState } from "react";
 import { TweetObject, UserInfoObject } from "..";
+import { kFormatter } from "../utils/kFormatter";
 import { mentionSplitter } from "../utils/mention";
 interface Props {
   tweet: TweetObject;
@@ -20,7 +21,8 @@ interface Props {
 }
 
 const Tweet = ({ tweet, userInfo, index }: Props) => {
-  const { text, entities } = tweet;
+  const { text, entities, public_metrics } = tweet;
+  const { like_count } = public_metrics;
   const { id, location, name, profile_image_url, url, username } = userInfo;
   const [transShouldStart, setTransShouldStart] = useState(false);
   const timeOutRef = useRef<any>();
@@ -29,7 +31,11 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
       // @refresh reset
       setTransShouldStart(true);
     }, (index % 10) * 150);
+    return () => {
+      clearTimeout(timeOutRef.current);
+    };
   }, [index]);
+
   const fixedText =
     entities?.mentions && mentionSplitter(text, entities.mentions);
   return (
@@ -81,27 +87,30 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
             ))}
         )
       </Text>
-      {(location || url) && (
-        <>
-          <Divider my="10px" />
-          <Wrap>
-            {location && (
-              <Flex alignItems="center">
-                <Image src={"/Location.svg"} height="4" alt="Location"></Image>
-                <Text> {location}</Text>
-              </Flex>
-            )}
-            {url && (
-              <Flex alignItems="center">
-                <Image src={"/Link.svg"} height="4" alt="Link"></Image>
-                <Link color="blue.400" href={url} target="_blank">
-                  {url}
-                </Link>
-              </Flex>
-            )}
-          </Wrap>
-        </>
-      )}
+
+      <>
+        <Divider my="10px" />
+        <Wrap>
+          {location && (
+            <Flex alignItems="center">
+              <Image src={"/Location.svg"} height="4" alt="Location"></Image>
+              <Text> {location}</Text>
+            </Flex>
+          )}
+          {url && (
+            <Flex alignItems="center">
+              <Image src={"/Link.svg"} height="4" alt="Link"></Image>
+              <Link color="blue.400" href={url} target="_blank">
+                {url}
+              </Link>
+            </Flex>
+          )}
+        </Wrap>
+        <Flex alignItems="center">
+          <Image src={"/Heart.svg"} mr="2" height="4" alt="Link"></Image>
+          {kFormatter(like_count)}
+        </Flex>
+      </>
     </Flex>
   );
 };

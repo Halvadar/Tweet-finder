@@ -9,7 +9,7 @@ const DayNight = (props: Props) => {
   return (
     <Button
       borderRadius="full"
-      position="absolute"
+      position="fixed"
       right="0"
       bg="gray.100"
       m="5"

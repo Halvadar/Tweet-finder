@@ -2,7 +2,7 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
 import type { NextPage } from "next";
 import Head from "next/head";
 import SearchBox from "./components/SearchBox";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Tweets from "./components/Tweets";
 import { useToast } from "@chakra-ui/react";
 import DayNight from "./components/DayNight";
@@ -18,6 +18,12 @@ export interface TweetObject {
   text: string;
   entities?: {
     mentions: Array<Mention>;
+  };
+  public_metrics: {
+    retweet_count: number;
+    reply_count: number;
+    like_count: number;
+    quote_count: number;
   };
 }
 export interface UserInfoObject {
@@ -43,7 +49,9 @@ const Home: NextPage = () => {
     next_token: undefined,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const tweetsContainerRef = useRef<HTMLDivElement>(null);
   const errorToast = useToast();
+
   const showError = (message: string) => {
     errorToast({
       description: message,
@@ -68,20 +76,23 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DayNight />
-      <Heading>Tweet Finder</Heading>
+      <Heading mt="20%">Tweet Finder</Heading>
       <Heading fontSize="lg" mt="4" color="gray.600">
         {"Find the user's best Tweets"}
       </Heading>
       <SearchBox
+        tweets={tweets}
         showError={showError}
         setIsLoading={setIsLoading}
         isLoading={isLoading}
         setTweets={setTweets}
         setUserInfo={setUserInfo}
         setMetaInfo={setMetaInfo}
+        tweetsContainer={tweetsContainerRef}
+        userInfo={userInfo}
       ></SearchBox>
 
-      <Tweets tweets={tweets} userInfo={userInfo} />
+      <Tweets ref={tweetsContainerRef} tweets={tweets} userInfo={userInfo} />
     </Flex>
   );
 };
