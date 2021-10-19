@@ -18,9 +18,11 @@ function Tweets({ tweets, userInfo }: Props): ReactElement {
       justifyContent="center"
       alignItems="flex-start"
     >
-      {tweets.map((tweet) => {
+      {tweets.map((tweet, index) => {
         const { id } = tweet;
-        return <Tweet key={id} tweet={tweet} userInfo={userInfo} />;
+        return (
+          <Tweet index={index} key={id} tweet={tweet} userInfo={userInfo} />
+        );
       })}
     </Flex>
   );

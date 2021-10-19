@@ -10,22 +10,33 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/layout";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TweetObject, UserInfoObject } from "..";
 import { mentionSplitter } from "../utils/mention";
 interface Props {
   tweet: TweetObject;
   userInfo: UserInfoObject;
+  index: number;
 }
 
-const Tweet = ({ tweet, userInfo }: Props) => {
+const Tweet = ({ tweet, userInfo, index }: Props) => {
   const { text, entities } = tweet;
   const { id, location, name, profile_image_url, url, username } = userInfo;
-
+  const [transShouldStart, setTransShouldStart] = useState(false);
+  const timeOutRef = useRef<any>();
+  useEffect(() => {
+    timeOutRef.current = setTimeout(() => {
+      // @refresh reset
+      setTransShouldStart(true);
+    }, (index % 10) * 150);
+  }, [index]);
   const fixedText =
     entities?.mentions && mentionSplitter(text, entities.mentions);
   return (
     <Flex
+      transition="all 0.8s ease-out"
+      transform={`translateY(${transShouldStart ? "0" : "-10%"})`}
+      opacity={transShouldStart ? "100%" : "0%"}
       maxW="100%"
       w="96"
       border="1px"
