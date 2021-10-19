@@ -11,7 +11,7 @@ import {
   Wrap,
 } from "@chakra-ui/layout";
 import React, { useEffect, useRef, useState } from "react";
-import { TweetObject, UserInfoObject } from "..";
+import { TweetObject, UserInfoObject } from "../pages";
 import { kFormatter } from "../utils/kFormatter";
 import { mentionSplitter } from "../utils/mention";
 interface Props {

@@ -1,6 +1,6 @@
 import { Link } from "@chakra-ui/layout";
 import { ReactElement } from "react";
-import { Mention } from "..";
+import { Mention } from "../pages";
 
 export const mentionSplitter = (text: string, mentions: Array<Mention>) => {
   let newTextArr: Array<string | ReactElement> = [];

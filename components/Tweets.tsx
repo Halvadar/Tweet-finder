@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { TweetObject, UserInfoObject } from "..";
+import { TweetObject, UserInfoObject } from "../pages";
 import Tweet from "./Tweet";
 
 interface Props {
@@ -37,7 +37,7 @@ const Tweets = forwardRef<HTMLDivElement, Props>(
     };
     useEffect(() => {
       setVisibleTweets(10);
-    }, [userInfo.username]);
+    }, [userInfo?.username]);
     useEffect(() => {
       window.addEventListener("scroll", onScroll);
       return () => {

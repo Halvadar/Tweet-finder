@@ -11,7 +11,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { TweetObject, UserInfoObject } from "..";
+import { TweetObject, UserInfoObject } from "../pages";
 
 interface Props {
   tweets: Array<TweetObject>;
