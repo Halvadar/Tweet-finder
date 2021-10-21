@@ -2,25 +2,27 @@ import { Link } from "@chakra-ui/layout";
 import { ReactElement } from "react";
 import { Mention } from "../pages";
 
-export const referenceSplitter = (text: string, mentions?: Array<Mention>) => {
-  let newTextArr: Array<string | ReactElement> = mentionHashSplitter(
-    text,
-    mentions
-  );
-
-  return newTextArr;
+type Reference = {
+  ref: string;
+  start: number;
+  end: number;
+  mention?: true;
+  hash?: true;
+  url?: true;
 };
 
-const mentionHashSplitter = (text: string, mentions?: Array<Mention>) => {
+export const referenceSplitter = (text: string, mentions?: Array<Mention>) => {
   let newTextArr: Array<string | ReactElement> = [];
-  const mentionsArr =
+  const mentionsArr: Reference[] =
     mentions?.map((mention) => ({
       ref: "@" + mention.username,
       start: mention.start,
       end: mention.end,
+      mention: true,
     })) ?? [];
   const hashArr = hashFinder(text);
-  const combinedArr = [...mentionsArr, ...hashArr].sort(
+  const urlArr = urlFinder(text);
+  const combinedArr = [...mentionsArr, ...hashArr, ...urlArr].sort(
     (ref1, ref2) => ref1.start - ref2.start
   );
   if (combinedArr.length > 0) {
@@ -29,20 +31,19 @@ const mentionHashSplitter = (text: string, mentions?: Array<Mention>) => {
       if (index === 0) {
         newTextArr.push(text.slice(0, ref.start));
       }
+      const href = ref.hash
+        ? "https://twitter.com/hashtag/" + ref.ref.slice(1, ref.ref.length)
+        : ref.url
+        ? ref.ref
+        : "https://twitter.com/" + ref.ref;
       //Every ref
-
       const newLinkElement = (
         <Link
           color="blue.300"
           _hover={{ textDecoration: "none" }}
           _focus={{ outline: 0 }}
           target="_blank"
-          href={
-            ref.ref[0] === "#"
-              ? "https://twitter.com/hashtag/" +
-                ref.ref.slice(1, ref.ref.length)
-              : "https://twitter.com/" + ref.ref
-          }
+          href={href}
         >
           {ref.ref}
         </Link>
@@ -67,15 +68,32 @@ const mentionHashSplitter = (text: string, mentions?: Array<Mention>) => {
 
 const hashFinder = (text: string) => {
   const reg = /\#[^\`\!\@\#\$\%\^\&\*\(\)\[\]\s]*/g;
-  let hashArr: { ref: any; start: number; end: number }[] = [];
+  let hashArr: Reference[] = [];
   let ref;
   while ((ref = reg.exec(text)) !== null) {
     hashArr.push({
       ref: ref[0],
       start: ref.index,
       end: reg.lastIndex,
+      hash: true,
     });
   }
 
   return hashArr;
+};
+
+const urlFinder = (text: string) => {
+  const reg =
+    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/g;
+  let urlArr: Reference[] = [];
+  let ref;
+  while ((ref = reg.exec(text)) !== null) {
+    urlArr.push({
+      ref: ref[0],
+      start: ref.index,
+      end: reg.lastIndex,
+      url: true,
+    });
+  }
+  return urlArr;
 };
