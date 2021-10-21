@@ -10,10 +10,11 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/layout";
+import { Tooltip } from "@chakra-ui/tooltip";
 import React, { useEffect, useRef, useState } from "react";
 import { TweetObject, UserInfoObject } from "../pages";
 import { kFormatter } from "../utils/kFormatter";
-import { mentionSplitter } from "../utils/mention";
+import { referenceSplitter } from "../utils/reference";
 interface Props {
   tweet: TweetObject;
   userInfo: UserInfoObject;
@@ -22,10 +23,11 @@ interface Props {
 
 const Tweet = ({ tweet, userInfo, index }: Props) => {
   const { text, entities, public_metrics } = tweet;
-  const { like_count } = public_metrics;
+  const { like_count, reply_count, retweet_count } = public_metrics;
   const { id, location, name, profile_image_url, url, username } = userInfo;
   const [transShouldStart, setTransShouldStart] = useState(false);
   // @refresh reset
+  console.log(reply_count, retweet_count);
   const timeOutRef = useRef<any>();
   useEffect(() => {
     timeOutRef.current = setTimeout(() => {
@@ -36,8 +38,7 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
     };
   }, [index]);
 
-  const fixedText =
-    entities?.mentions && mentionSplitter(text, entities.mentions);
+  const fixedText = referenceSplitter(text, entities?.mentions);
   return (
     <Flex
       transition="all 0.8s ease-out"
@@ -80,11 +81,9 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
         </Flex>
       </HStack>
       <Text>
-        {!fixedText
-          ? text
-          : fixedText.map((fragment, index) => {
-              return <React.Fragment key={index}>{fragment}</React.Fragment>;
-            })}
+        {fixedText.map((fragment, index) => {
+          return <React.Fragment key={index}>{fragment}</React.Fragment>;
+        })}
       </Text>
 
       <>
@@ -105,10 +104,26 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
             </Flex>
           )}
         </Wrap>
-        <Flex alignItems="center">
-          <Image src={"/Heart.svg"} mr="2" height="4" alt="Link"></Image>
-          {kFormatter(like_count)}
-        </Flex>
+        <Wrap mt="4" mb="2" spacing="5">
+          <Tooltip label="Likes">
+            <Flex alignItems="center">
+              <Image src={"/Heart.svg"} mr="2" height="4" alt="Link"></Image>
+              {kFormatter(like_count)}
+            </Flex>
+          </Tooltip>
+          <Tooltip label="Comments">
+            <Flex alignItems="center">
+              <Image src={"/Comment.svg"} mr="2" height="5" alt="Link"></Image>
+              {kFormatter(retweet_count)}
+            </Flex>
+          </Tooltip>
+          <Tooltip label="Retweets">
+            <Flex alignItems="center">
+              <Image src={"/Retweet.svg"} mr="2" height="5" alt="Link"></Image>
+              {kFormatter(reply_count)}
+            </Flex>
+          </Tooltip>
+        </Wrap>
       </>
     </Flex>
   );
