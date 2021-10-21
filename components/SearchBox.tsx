@@ -62,7 +62,7 @@ const SearchBox = ({
     await axios("/api/Api?handle=" + trimmedInput)
       .then((res: any) => {
         const { tweets, userInfo, metaInfo } = res.data;
-
+        console.log(tweets);
         scrollToTweets(tweets.length);
 
         setTweets(tweets);

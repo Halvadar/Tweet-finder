@@ -25,10 +25,10 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
   const { like_count } = public_metrics;
   const { id, location, name, profile_image_url, url, username } = userInfo;
   const [transShouldStart, setTransShouldStart] = useState(false);
+  // @refresh reset
   const timeOutRef = useRef<any>();
   useEffect(() => {
     timeOutRef.current = setTimeout(() => {
-      // @refresh reset
       setTransShouldStart(true);
     }, (index % 10) * 150);
     return () => {
@@ -82,10 +82,9 @@ const Tweet = ({ tweet, userInfo, index }: Props) => {
       <Text>
         {!fixedText
           ? text
-          : fixedText.map((fragment, index) => (
-              <React.Fragment key={index}>{fragment}</React.Fragment>
-            ))}
-        )
+          : fixedText.map((fragment, index) => {
+              return <React.Fragment key={index}>{fragment}</React.Fragment>;
+            })}
       </Text>
 
       <>

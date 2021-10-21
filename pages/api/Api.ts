@@ -57,6 +57,7 @@ export default async function handler(
   nextToken = tweetsResult.data.meta.next_token;
 
   const bestTweets = bestTweetPicker(tweets);
+
   res.status(200).send({ tweets: bestTweets, userInfo, metaInfo });
 }
 
